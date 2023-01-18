@@ -112,9 +112,10 @@ class WeatherData {
         this.rain1 = rain1;
         this.snow1 = snow1;
         this.clouds = clouds;
-        this.utcTime = unixTimeToHHMMSS(utcTime);
+        this.utcTime = unixTimeToHHMMSS(utcTime-3600); // I don't now why but UTC time from API is 1 hour ahead
         this.sunrise = unixTimeToHHMMSS(sunrise);
         this.sunset = unixTimeToHHMMSS(sunset);
+        this.localTime = unixTimeToHHMMSS(utcTime-3600+timezone); // Same as in utcTime
     }
 
     getLocation() {
@@ -184,6 +185,10 @@ class WeatherData {
     getSunsetTime() {
         return this.sunset;
     }
+
+    getLocalTime() {
+        return this.localTime;
+    }
 }
 
 async function getDataFromAPI(location) {
@@ -234,15 +239,25 @@ function parseRawWeatherData(data) {
     console.log(weatherIn);
 }
 
+// Function that takes a WeatherData object and displays its data to the user
+function displayData(weatherDataObj) {
+    const h2 = document.querySelector('h2');
+
+    h2.textContent = `This is the weather in "${weatherDataObj.getLocation()}" at ${weatherDataObj.getLocalTime()} (local time)`;
+}
+
 // Test - default call to our function
 getDataFromAPI("Logatec")
-    .then((data) => parseRawWeatherData(data));
+    .then((data) => {
+        parseRawWeatherData(data);
+        displayData(weatherIn);
+    });
 
 // Event Listener associated to search button
 searchButton.addEventListener("click", () => {
     getDataFromAPI(inputBox.value)
         .then((data) => {
             parseRawWeatherData(data);
-            
+            displayData(weatherIn);
         });
 });

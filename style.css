@@ -93,3 +93,9 @@ input {
     margin-top: 3em;
     background-color: rgb(248, 206, 151);
 }
+
+h2 {
+    font-size: 2em;
+    padding-bottom: 2em;
+    padding-top: 1em;
+}
