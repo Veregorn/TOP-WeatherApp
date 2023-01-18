@@ -88,3 +88,8 @@ input {
 #search:hover {
     background-color: rgb(65, 108, 109);
 }
+
+#data-container {
+    margin-top: 3em;
+    background-color: rgb(248, 206, 151);
+}

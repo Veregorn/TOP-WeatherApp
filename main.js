@@ -82,6 +82,18 @@ class WeatherType {
         this.desc = desc;
         this.icon = `http://openweathermap.org/img/wn/${icon}@2x.png`;
     }
+
+    getWeatherName() {
+        return this.title;
+    }
+
+    getWeatherDescription() {
+        return this.desc;
+    }
+
+    getWeatherIcon() {
+        return this.icon;
+    }
 }
 
 // Weather Data Class
@@ -103,6 +115,74 @@ class WeatherData {
         this.utcTime = unixTimeToHHMMSS(utcTime);
         this.sunrise = unixTimeToHHMMSS(sunrise);
         this.sunset = unixTimeToHHMMSS(sunset);
+    }
+
+    getLocation() {
+        return this.location;
+    }
+
+    getCountry() {
+        return this.country;
+    }
+
+    getTimezone() {
+        return this.timezone;
+    }
+
+    getNumberOfWeatherTypes() {
+        return this.weather.length;
+    }
+
+    getWeatherTypes() {
+        return this.weather;
+    }
+
+    getTemp() {
+        return this.temp;
+    }
+
+    getFeels() {
+        return this.feels;
+    }
+
+    getPressure() {
+        return this.pressure;
+    }
+
+    getHumidity() {
+        return this.humidity;
+    }
+
+    getWindSpeed() {
+        return this.windSpeed;
+    }
+
+    getWindDeg() {
+        return this.windDeg;
+    }
+
+    getRain() {
+        return this.rain1;
+    }
+
+    getSnow() {
+        return this.snow1;
+    }
+
+    getClouds() {
+        return this.clouds;
+    }
+
+    getUtcTime() {
+        return this.utcTime;
+    }
+
+    getSunriseTime() {
+        return this.sunrise;
+    }
+
+    getSunsetTime() {
+        return this.sunset;
     }
 }
 
@@ -161,5 +241,8 @@ getDataFromAPI("Logatec")
 // Event Listener associated to search button
 searchButton.addEventListener("click", () => {
     getDataFromAPI(inputBox.value)
-        .then((data) => parseRawWeatherData(data));
+        .then((data) => {
+            parseRawWeatherData(data);
+            
+        });
 });
