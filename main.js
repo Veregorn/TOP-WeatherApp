@@ -1,5 +1,6 @@
 // Global variables and constants
 let units = "metric"; // Change it to "imperial" for Fahrenheit grades
+let weatherIn;
 
 // This function transform wind direction in degrees unit to coordinates based in 32 points rose compass
 function degreesToCoordinates(degrees) {
@@ -46,11 +47,25 @@ function unixTimeToHHMMSS(time) {
     var date = new Date(time * 1000);
     
     // Hours part from the timestamp
-    var hours = date.getHours();
+    if (date.getHours().toString().length == 1) {
+        var hours = "0" + date.getHours();
+    } else {
+        var hours = date.getHours();
+    }
+    
     // Minutes part from the timestamp
-    var minutes = "0" + date.getMinutes();
+    if (date.getMinutes().toString().length == 1) {
+        var minutes = "0" + date.getMinutes();
+    } else {
+        var minutes = date.getMinutes();
+    }
+    
     // Seconds part from the timestamp
-    var seconds = "0" + date.getSeconds();
+    if (date.getSeconds().toString().length == 1) {
+        var seconds = "0" + date.getSeconds();
+    } else {
+        var seconds = date.getSeconds();
+    }
 
     // Will display time in 10:30:23 format
     var formattedTime = hours + ':' + minutes + ':' + seconds;
@@ -58,15 +73,22 @@ function unixTimeToHHMMSS(time) {
     return formattedTime;
 }
 
-// Weather Class
-class Weather {
-    constructor(location,country,timezone,title,desc,icon,temp,feels,pressure,humidity,windSpeed,windDeg,rain1,snow1,clouds,utcTime,sunrise,sunset) {
-        this.location = location;
-        this.country = country;
-        this.timezone = timezone / 3600; // From seconds to hours
+// Weather Type Class
+class WeatherType {
+    constructor(title,desc,icon) {
         this.title = title;
         this.desc = desc;
         this.icon = `http://openweathermap.org/img/wn/${icon}@2x.png`;
+    }
+}
+
+// Weather Data Class
+class WeatherData {
+    constructor(location,country,timezone,weather,temp,feels,pressure,humidity,windSpeed,windDeg,rain1,snow1,clouds,utcTime,sunrise,sunset) {
+        this.location = location;
+        this.country = country;
+        this.timezone = timezone / 3600; // From seconds to hours
+        this.weather = weather; // Is an array of WeatherType Objects!!! 
         this.temp = temp;
         this.feels = feels;
         this.pressure = pressure;
@@ -82,21 +104,54 @@ class Weather {
     }
 }
 
-async function getWeatherData(location) {
+async function getDataFromAPI(location) {
     try {
         // Com with the server
         const response = await fetch(`https://api.openweathermap.org/data/2.5/weather?q=${location}&APPID=a9d46371cffec0745195f9b5d7ae205b&units=${units}`, {
             mode: 'cors'
         });
-        // Passing from object to json format
-        const json = response.json();
-        // Printing info to console
-        console.log(json);
+        // Passing from json to object
+        const dataObject = response.json();
+
+        return dataObject;
     } catch (error) {
         // If some error happens, print it
         console.log(error);
     }
 }
 
+// Function that parses
+function parseRawWeatherType(type) {
+    return new WeatherType(type.main,type.description,type.icon);
+}
+
+// Function that takes an Object from an OpenWeather fetch response and converts it into an Object of class Weather
+function parseRawWeatherData(data) {
+    let weatherTypeArray = Array();
+
+    for (let i = 0; i < data.weather.length; i++) {
+        const element = data.weather[i];
+        weatherTypeArray.push(parseRawWeatherType(element));
+    }
+
+    let rain;
+    if (data.rain) {
+        rain = data.rain['1h'];
+    } else {
+        rain = 0;
+    }
+
+    let snow;
+    if (data.snow) {
+        snow = data.snow['1h'];
+    } else {
+        snow = 0;
+    }
+    
+    weatherIn = new WeatherData(data.name,data.sys.country,data.timezone,weatherTypeArray,data.main.temp,data.main.feels_like,data.main.pressure,data.main.humidity,data.wind.speed,data.wind.deg,rain,snow,data.clouds.all,data.dt,data.sys.sunrise,data.sys.sunset);
+    console.log(weatherIn);
+}
+
 // Test - default call to our function
-getWeatherData("Madrid");
+getDataFromAPI("Logatec")
+    .then((data) => parseRawWeatherData(data));
