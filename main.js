@@ -1,6 +1,8 @@
 // Global variables and constants
 let units = "metric"; // Change it to "imperial" for Fahrenheit grades
-let weatherIn;
+let weatherIn; // Where the data from API will be stored
+const searchButton = document.getElementById('search'); // For Event Listener associated to it
+let inputBox = document.getElementById('inputBox'); // We need its value to pass it to the API
 
 // This function transform wind direction in degrees unit to coordinates based in 32 points rose compass
 function degreesToCoordinates(degrees) {
@@ -155,3 +157,9 @@ function parseRawWeatherData(data) {
 // Test - default call to our function
 getDataFromAPI("Logatec")
     .then((data) => parseRawWeatherData(data));
+
+// Event Listener associated to search button
+searchButton.addEventListener("click", () => {
+    getDataFromAPI(inputBox.value)
+        .then((data) => parseRawWeatherData(data));
+});
