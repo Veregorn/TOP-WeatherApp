@@ -1,8 +1,11 @@
 // Global variables and constants
-let units = "metric"; // Change it to "imperial" for Fahrenheit grades
+let system = "metric"; // Can change to "imperial"
+let tempUnits = "C"; // Must change to "F" for "imperial" system
+let speedUnits = "meter/sec"; //Must change to "miles/hour" for "imperial" system
 let weatherIn; // Where the data from API will be stored
 const searchButton = document.getElementById('search'); // For Event Listener associated to it
 let inputBox = document.getElementById('inputBox'); // We need its value to pass it to the API
+const dataCont = document.getElementById('data-container'); // Where we need to append weather data fields
 
 // This function transform wind direction in degrees unit to coordinates based in 32 points rose compass
 function degreesToCoordinates(degrees) {
@@ -194,7 +197,7 @@ class WeatherData {
 async function getDataFromAPI(location) {
     try {
         // Com with the server
-        const response = await fetch(`https://api.openweathermap.org/data/2.5/weather?q=${location}&APPID=a9d46371cffec0745195f9b5d7ae205b&units=${units}`, {
+        const response = await fetch(`https://api.openweathermap.org/data/2.5/weather?q=${location}&APPID=a9d46371cffec0745195f9b5d7ae205b&units=${system}`, {
             mode: 'cors'
         });
         // Passing from json to object
@@ -239,11 +242,91 @@ function parseRawWeatherData(data) {
     console.log(weatherIn);
 }
 
+// Create an element with an optional CSS id
+function createElementWithId(tag, id) {
+    const element = document.createElement(tag);
+    if (id) {
+      element.setAttribute("id", id);
+    }
+  
+    return element;
+}
+  
+// Create an element with an optional CSS class
+function createElementWithClass(tag, className) {
+    const element = document.createElement(tag);
+    if (className) {
+        element.classList.add(className);
+    }
+
+    return element;
+}
+
 // Function that takes a WeatherData object and displays its data to the user
 function displayData(weatherDataObj) {
     const h2 = document.querySelector('h2');
 
-    h2.textContent = `This is the weather in "${weatherDataObj.getLocation()}" at ${weatherDataObj.getLocalTime()} (local time)`;
+    h2.textContent = `This is the weather in "${weatherDataObj.getLocation()} (${weatherDataObj.country})" at ${weatherDataObj.getLocalTime()} (local time) (${weatherDataObj.timezone} from UTC)`;
+
+    // NEW FIELDS
+
+    // Print weather types
+    const weatherTypes = weatherDataObj.getWeatherTypes();
+    for (let i = 0; i < weatherDataObj.getNumberOfWeatherTypes(); i++) {
+        const img =  new Image();
+        img.src = weatherTypes[i].getWeatherIcon();
+        const name = createElementWithClass('p','data');
+        const desc = createElementWithClass('p','data');
+        name.textContent = weatherTypes[i].getWeatherName();
+        desc.textContent = weatherTypes[i].getWeatherDescription();
+
+        dataCont.appendChild(img);
+        dataCont.appendChild(name);
+        dataCont.appendChild(desc);
+    }
+
+    // Print other data
+    const temp = createElementWithClass('p','data');
+    temp.textContent = `Temperature: ${weatherDataObj.getTemp()}º ${tempUnits}`;
+    const feels = createElementWithClass('p','data');
+    feels.textContent = `Feels like: ${weatherDataObj.getFeels()}º ${tempUnits}`;
+    const pres = createElementWithClass('p','data');
+    pres.textContent = `Pressure: ${weatherDataObj.getPressure()} hPa`;
+    const hum = createElementWithClass('p','data');
+    hum.textContent = `Humidity: ${weatherDataObj.getHumidity()} %`;
+    const speed = createElementWithClass('p','data');
+    speed.textContent = `Wind speed: ${weatherDataObj.getWindSpeed()} ${speedUnits}`;
+    const dir = createElementWithClass('p','data');
+    dir.textContent = `Wind direction: ${weatherDataObj.getWindDeg()}`;
+    const clouds = createElementWithClass('p','data');
+    clouds.textContent = `Clouds: ${weatherDataObj.getClouds()} %`;
+    const sunrise = createElementWithClass('p','data');
+    sunrise.textContent = `Sunrise Time: ${weatherDataObj.getSunriseTime()}`;
+    const sunset = createElementWithClass('p','data');
+    sunset.textContent = `Sunset Time: ${weatherDataObj.getSunsetTime()}`;
+
+    dataCont.appendChild(temp);
+    dataCont.appendChild(feels);
+    dataCont.appendChild(pres);
+    dataCont.appendChild(hum);
+    dataCont.appendChild(speed);
+    dataCont.appendChild(dir);
+    dataCont.appendChild(clouds);
+    dataCont.appendChild(sunrise);
+    dataCont.appendChild(sunset);
+
+    // Rain and snow measures only displayed if > 0
+    if (weatherDataObj.getRain() > 0) {
+        const rain = createElementWithClass('p','data');
+        rain.textContent = `Precipitation volume for last hour: ${weatherDataObj.getRain()} mm`;
+        dataCont.appendChild(rain);
+    }
+
+    if (weatherDataObj.getSnow() > 0) {
+        const snow = createElementWithClass('p','data');
+        snow.textContent = `Snow volume for last hour: ${weatherDataObj.getSnow()} mm`;
+        dataCont.appendChild(snow);
+    }
 }
 
 // Test - default call to our function
