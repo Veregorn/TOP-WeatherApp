@@ -6,6 +6,7 @@ let weatherIn; // Where the data from API will be stored
 const searchButton = document.getElementById('search'); // For Event Listener associated to it
 let inputBox = document.getElementById('inputBox'); // We need its value to pass it to the API
 const dataCont = document.getElementById('data-container'); // Where we need to append weather data fields
+const unitsButton = document.getElementById('units'); // For Event Listener associated to it
 
 // This function transform wind direction in degrees unit to coordinates based in 32 points rose compass
 function degreesToCoordinates(degrees) {
@@ -76,6 +77,21 @@ function unixTimeToHHMMSS(time) {
     var formattedTime = hours + ':' + minutes + ':' + seconds;
 
     return formattedTime;
+}
+
+// This function toggle between units systems
+function toggleUnitsSystem() {
+    if (system == "metric") {
+        system = "imperial";
+        tempUnits = "F";
+        speedUnits = "miles/hour";
+        unitsButton.textContent = "Metric";
+    } else {
+        system = "metric";
+        tempUnits = "C";
+        speedUnits = "meter/sec";
+        unitsButton.textContent = "Imperial";
+    }
 }
 
 // Weather Type Class
@@ -239,7 +255,6 @@ function parseRawWeatherData(data) {
     }
     
     weatherIn = new WeatherData(data.name,data.sys.country,data.timezone,weatherTypeArray,data.main.temp,data.main.feels_like,data.main.pressure,data.main.humidity,data.wind.speed,data.wind.deg,rain,snow,data.clouds.all,data.dt,data.sys.sunrise,data.sys.sunset);
-    console.log(weatherIn);
 }
 
 // Create an element with an optional CSS id
@@ -264,6 +279,9 @@ function createElementWithClass(tag, className) {
 
 // Function that takes a WeatherData object and displays its data to the user
 function displayData(weatherDataObj) {
+    // Setting background
+    document.body.style.backgroundImage = `url('./Backgrounds/${weatherDataObj.getWeatherTypes()[0].getWeatherName()}-bg.jpg')`;
+    
     const h2 = document.querySelector('h2');
 
     h2.textContent = `This is the weather in "${weatherDataObj.getLocation()} (${weatherDataObj.country})" at ${weatherDataObj.getLocalTime()} (local time) (${weatherDataObj.timezone} from UTC)`;
@@ -329,8 +347,14 @@ function displayData(weatherDataObj) {
     }
 }
 
+function cleanOldData() {
+    while (dataCont.childNodes.length > 2) { // Needs to be 2 because there is another strange child named #text before h2
+        dataCont.removeChild(dataCont.lastChild);
+    }
+}
+
 // Test - default call to our function
-getDataFromAPI("Logatec")
+getDataFromAPI("Madrid")
     .then((data) => {
         parseRawWeatherData(data);
         displayData(weatherIn);
@@ -341,6 +365,14 @@ searchButton.addEventListener("click", () => {
     getDataFromAPI(inputBox.value)
         .then((data) => {
             parseRawWeatherData(data);
+            // Clean previous data
+            cleanOldData();
+            // Display new data
             displayData(weatherIn);
         });
+});
+
+// Event Listener associated to units button
+unitsButton.addEventListener("click", () => {
+    toggleUnitsSystem();
 });

@@ -23,3 +23,21 @@ Assignment
 - Add any styling you like!
 - Optional: add a ‘loading’ component that displays from the time the form is submitted until the information comes back from the API.
 - Push that baby to github and share your solution below!
+
+Free Unsplash Background Credits
+
+- Thunderstorm: Tasos Mansour
+- Drizzle: Hafidh Satyanto
+- Rain: Veritet
+- Snow: Takemaru Hirai
+- Mist: Goran Vučićević
+- Smoke: Daniel Gregoire
+- Haze: Hans Isaacson
+- Dust: NOAA
+- Fog: Nathan Anderson
+- Sand: Wolfgang Hasselmann
+- Ash: Yosh Ginsu
+- Squall: NOAA
+- Tornado: NOAA
+- Clear: Palle Knudsen
+- Clouds: Zbynek Burival

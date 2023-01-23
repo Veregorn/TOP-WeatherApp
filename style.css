@@ -48,6 +48,15 @@ table {
 }
 
 /* MY OWN CODE BELOW */
+body {
+    background-size: cover;
+    background-repeat: no-repeat;
+    width: 100ch;
+    height: 100vh;
+    display: grid;
+    grid-template-columns: 60% 40%;
+}
+
 #container {
     width: 80%;
     margin: 0 auto;
@@ -87,6 +96,20 @@ input {
 
 #search:hover {
     background-color: rgb(65, 108, 109);
+}
+
+#units-title {
+    margin-top: 2em;
+}
+
+#units {
+    margin-top: 1em;
+    padding: 1em;
+    font-size: larger;
+}
+
+#units:hover {
+    opacity: 80%;
 }
 
 #data-container {

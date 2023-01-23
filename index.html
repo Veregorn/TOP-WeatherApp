@@ -8,15 +8,19 @@
     <link rel="stylesheet" href="style.css">
 </head>
 <body>
-    <div id="container">
+    <div id="left-container">
         <h1>Veregorn's Weather App</h1>
+        <p id="units-title">Change units system to: </p>
+        <button id="units">Imperial</button>
+        <div id="data-container">
+            <h2></h2>
+        </div>
+    </div>
+    <div id="right-container">
         <form action="#">
             <input id="inputBox" type="text">
             <input id="search" type="submit" value="Search">
         </form>
-        <div id="data-container">
-            <h2></h2>
-        </div>
     </div>
     <script src="main.js"></script>
 </body>
