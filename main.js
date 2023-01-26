@@ -1,4 +1,5 @@
 // Global variables and constants
+let currentSearch = "Madrid"; // Saves the last city searched
 let system = "metric"; // Can change to "imperial"
 let tempUnits = "C"; // Must change to "F" for "imperial" system
 let speedUnits = "meter/sec"; //Must change to "miles/hour" for "imperial" system
@@ -6,7 +7,7 @@ let weatherIn; // Where the data from API will be stored
 const searchButton = document.getElementById('search'); // For Event Listener associated to it
 let inputBox = document.getElementById('inputBox'); // We need its value to pass it to the API
 const dataCont = document.getElementById('data-container'); // Where we need to append weather data fields
-const unitsButton = document.getElementById('units'); // For Event Listener associated to it
+const unitsCheck = document.getElementById('units'); // For Event Listener associated to it
 
 // This function transform wind direction in degrees unit to coordinates based in 32 points rose compass
 function degreesToCoordinates(degrees) {
@@ -47,8 +48,8 @@ function degreesToCoordinates(degrees) {
     }
 }
 
-// This function translate Unix time into HH:MM:SS format
-function unixTimeToHHMMSS(time) {
+// This function translate Unix time into HH:MM format
+function unixTimeToHHMM(time) {
     // input unit is mili seconds and we need seconds instead
     var date = new Date(time * 1000);
     
@@ -65,16 +66,9 @@ function unixTimeToHHMMSS(time) {
     } else {
         var minutes = date.getMinutes();
     }
-    
-    // Seconds part from the timestamp
-    if (date.getSeconds().toString().length == 1) {
-        var seconds = "0" + date.getSeconds();
-    } else {
-        var seconds = date.getSeconds();
-    }
 
-    // Will display time in 10:30:23 format
-    var formattedTime = hours + ':' + minutes + ':' + seconds;
+    // Will display time in 10:30 format
+    var formattedTime = hours + ':' + minutes;
 
     return formattedTime;
 }
@@ -85,12 +79,10 @@ function toggleUnitsSystem() {
         system = "imperial";
         tempUnits = "F";
         speedUnits = "miles/hour";
-        unitsButton.textContent = "Metric";
     } else {
         system = "metric";
         tempUnits = "C";
         speedUnits = "meter/sec";
-        unitsButton.textContent = "Imperial";
     }
 }
 
@@ -131,10 +123,10 @@ class WeatherData {
         this.rain1 = rain1;
         this.snow1 = snow1;
         this.clouds = clouds;
-        this.utcTime = unixTimeToHHMMSS(utcTime-3600); // I don't now why but UTC time from API is 1 hour ahead
-        this.sunrise = unixTimeToHHMMSS(sunrise);
-        this.sunset = unixTimeToHHMMSS(sunset);
-        this.localTime = unixTimeToHHMMSS(utcTime-3600+timezone); // Same as in utcTime
+        this.utcTime = unixTimeToHHMM(utcTime-3600); // I don't now why but UTC time from API is 1 hour ahead
+        this.sunrise = unixTimeToHHMM(sunrise);
+        this.sunset = unixTimeToHHMM(sunset);
+        this.localTime = unixTimeToHHMM(utcTime-3600+timezone); // Same as in utcTime
     }
 
     getLocation() {
@@ -282,13 +274,31 @@ function displayData(weatherDataObj) {
     // Setting background
     document.body.style.backgroundImage = `url('./Backgrounds/${weatherDataObj.getWeatherTypes()[0].getWeatherName()}-bg.jpg')`;
     
-    const h2 = document.querySelector('h2');
+    // Displaying temp
+    const tempCont = createElementWithId('div','temp-cont');
+    const temp = document.createElement('h1');
+    temp.textContent = `${Math.round(weatherDataObj.getTemp())}º${tempUnits}`;
+    tempCont.appendChild(temp);
+    dataCont.appendChild(tempCont);
 
-    h2.textContent = `This is the weather in "${weatherDataObj.getLocation()} (${weatherDataObj.country})" at ${weatherDataObj.getLocalTime()} (local time) (${weatherDataObj.timezone} from UTC)`;
+    // Displaying location, date, time info
+    const locInfoCont = createElementWithId('div','loc-info-cont');
+    const cityCont = createElementWithId('div','city-cont');
+    const timeDateCont = createElementWithId('div','time-date-cont');
+    locInfoCont.appendChild(cityCont);
+    locInfoCont.appendChild(timeDateCont);
+    dataCont.appendChild(locInfoCont);
 
-    // NEW FIELDS
+    const city = document.createElement('h2');
+    city.textContent = weatherDataObj.getLocation();
+    cityCont.appendChild(city);
+
+    const dateTime = document.createElement('p');
+    dateTime.textContent = `${weatherDataObj.getLocalTime()} (UTC + ${weatherDataObj.timezone}) - `;
+    timeDateCont.appendChild(dateTime);
 
     // Print weather types
+    /*
     const weatherTypes = weatherDataObj.getWeatherTypes();
     for (let i = 0; i < weatherDataObj.getNumberOfWeatherTypes(); i++) {
         const img =  new Image();
@@ -301,11 +311,10 @@ function displayData(weatherDataObj) {
         dataCont.appendChild(img);
         dataCont.appendChild(name);
         dataCont.appendChild(desc);
-    }
+    }*/
 
     // Print other data
-    const temp = createElementWithClass('p','data');
-    temp.textContent = `Temperature: ${weatherDataObj.getTemp()}º ${tempUnits}`;
+    /*
     const feels = createElementWithClass('p','data');
     feels.textContent = `Feels like: ${weatherDataObj.getFeels()}º ${tempUnits}`;
     const pres = createElementWithClass('p','data');
@@ -323,7 +332,6 @@ function displayData(weatherDataObj) {
     const sunset = createElementWithClass('p','data');
     sunset.textContent = `Sunset Time: ${weatherDataObj.getSunsetTime()}`;
 
-    dataCont.appendChild(temp);
     dataCont.appendChild(feels);
     dataCont.appendChild(pres);
     dataCont.appendChild(hum);
@@ -331,9 +339,10 @@ function displayData(weatherDataObj) {
     dataCont.appendChild(dir);
     dataCont.appendChild(clouds);
     dataCont.appendChild(sunrise);
-    dataCont.appendChild(sunset);
+    dataCont.appendChild(sunset);*/
 
     // Rain and snow measures only displayed if > 0
+    /*
     if (weatherDataObj.getRain() > 0) {
         const rain = createElementWithClass('p','data');
         rain.textContent = `Precipitation volume for last hour: ${weatherDataObj.getRain()} mm`;
@@ -344,35 +353,45 @@ function displayData(weatherDataObj) {
         const snow = createElementWithClass('p','data');
         snow.textContent = `Snow volume for last hour: ${weatherDataObj.getSnow()} mm`;
         dataCont.appendChild(snow);
-    }
+    }*/
 }
 
 function cleanOldData() {
-    while (dataCont.childNodes.length > 2) { // Needs to be 2 because there is another strange child named #text before h2
+    while (dataCont.childNodes.length > 1) {
         dataCont.removeChild(dataCont.lastChild);
     }
 }
 
-// Test - default call to our function
-getDataFromAPI("Madrid")
-    .then((data) => {
-        parseRawWeatherData(data);
-        displayData(weatherIn);
-    });
-
-// Event Listener associated to search button
-searchButton.addEventListener("click", () => {
-    getDataFromAPI(inputBox.value)
+// Function that exec the API call, create the obj, clean screen and displays the data
+function asyncWeatherApiCall(search) {
+    getDataFromAPI(search)
         .then((data) => {
             parseRawWeatherData(data);
             // Clean previous data
             cleanOldData();
             // Display new data
             displayData(weatherIn);
+        })
+        .catch((error) => {
+            // Clean previous data
+            cleanOldData();
+            const errorMsg = document.createElement('h2');
+            errorMsg.textContent = "Server error: Please try to search again :-(";
+            dataCont.appendChild(errorMsg);
         });
+}
+
+// Test - default call to our function
+asyncWeatherApiCall(currentSearch);
+
+// Event Listener associated to search button
+searchButton.addEventListener("click", () => {
+    currentSearch = inputBox.value;
+    asyncWeatherApiCall(currentSearch);
 });
 
-// Event Listener associated to units button
-unitsButton.addEventListener("click", () => {
+// Event Listener associated to units checkbox
+unitsCheck.addEventListener("change", () => {
     toggleUnitsSystem();
+    asyncWeatherApiCall(currentSearch);
 });

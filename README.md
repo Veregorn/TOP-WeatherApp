@@ -39,5 +39,5 @@ Free Unsplash Background Credits
 - Ash: Yosh Ginsu
 - Squall: NOAA
 - Tornado: NOAA
-- Clear: Palle Knudsen
+- Clear: Photo by form PxHere -> https://pxhere.com/en/photo/707105
 - Clouds: Zbynek Burival

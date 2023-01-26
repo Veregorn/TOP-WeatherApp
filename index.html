@@ -9,18 +9,38 @@
 </head>
 <body>
     <div id="left-container">
-        <h1>Veregorn's Weather App</h1>
-        <p id="units-title">Change units system to: </p>
-        <button id="units">Imperial</button>
+        <div id="header">
+            <h3>Veregorn's Weather App</h3>
+            <div class="button b2" id="button-10">
+                <input id="units" type="checkbox" class="checkbox" />
+                <div class="knobs">
+                    <span>Metric</span>
+                </div>
+                <div class="layer"></div>
+            </div>
+        </div>
         <div id="data-container">
-            <h2></h2>
+            <div id="weathers-cont"></div>
+        </div>
+        <div id="footer">
+
         </div>
     </div>
     <div id="right-container">
-        <form action="#">
-            <input id="inputBox" type="text">
-            <input id="search" type="submit" value="Search">
-        </form>
+        <div id="search">
+            <div id="search-top">
+                <form action="#">
+                    <input id="inputBox" type="text">
+                    <input id="search" type="submit" value="Search">
+                </form>
+            </div>
+            <div id="search-bottom">
+
+            </div>
+        </div>
+        <div id="data-details">
+            <h3>Weather Details</h3>
+        </div>
     </div>
     <script src="main.js"></script>
 </body>
