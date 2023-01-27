@@ -73,6 +73,17 @@ function unixTimeToHHMM(time) {
     return formattedTime;
 }
 
+function formatDate(date) {
+    const year = date.getFullYear();
+    const months = ["Jan", "Feb", "Mar", "Apr", "May", "Jun", "Jul", "Aug", "Sept", "Oct", "Nov", "Dec"];
+    const month = months[date.getMonth()];
+    const day = date.getDate();
+    const days = ["Sun", "Mon", "Tue", "Wed", "Thu", "Fri", "Sat"];
+    const weekDay = days[date.getDay()];
+
+    return `${weekDay}, ${day} ${month} ${year}`;
+}
+
 // This function toggle between units systems
 function toggleUnitsSystem() {
     if (system == "metric") {
@@ -123,7 +134,7 @@ class WeatherData {
         this.rain1 = rain1;
         this.snow1 = snow1;
         this.clouds = clouds;
-        this.utcTime = unixTimeToHHMM(utcTime-3600); // I don't now why but UTC time from API is 1 hour ahead
+        this.utcTime = unixTimeToHHMM(utcTime-3600); // I don't know why but UTC time from API is 1 hour ahead
         this.sunrise = unixTimeToHHMM(sunrise);
         this.sunset = unixTimeToHHMM(sunset);
         this.localTime = unixTimeToHHMM(utcTime-3600+timezone); // Same as in utcTime
@@ -269,6 +280,114 @@ function createElementWithClass(tag, className) {
     return element;
 }
 
+// Function that create HTML elements in DOM in order to display the different weathers in a WeatherData Object
+function displayWeatherTypes(weatherDataObj) {
+    const weathersCont = createElementWithId('div','weathers-cont');
+    dataCont.appendChild(weathersCont);
+    const weatherTypes = weatherDataObj.getWeatherTypes();
+    for (let i = 0; i < weatherDataObj.getNumberOfWeatherTypes(); i++) {
+        const oneWeatherCont = createElementWithId('div','one-weather-cont');
+        //const img =  new Image();
+        //img.src = weatherTypes[i].getWeatherIcon();
+
+        // Switch - Case that build tha icon structure based on the weather name
+        switch (weatherTypes[i].getWeatherName()) {
+            case "Thunderstorm":
+                const iconThunderstorm = createElementWithClass('div','icon');
+                iconThunderstorm.classList.add('thunder-storm');
+                const cloud1 = createElementWithClass('div','cloud');
+                const lightning = createElementWithClass('div','lightning');
+                const bolt1 = createElementWithClass('div','bolt');
+                const bolt2 = createElementWithClass('div','bolt');
+                lightning.appendChild(bolt1);
+                lightning.appendChild(bolt2);
+                iconThunderstorm.appendChild(cloud1);
+                iconThunderstorm.appendChild(lightning);
+                oneWeatherCont.appendChild(iconThunderstorm);
+                break;
+            case "Drizzle":
+                const iconSunshower = createElementWithClass('div','icon');
+                iconSunshower.classList.add('sun-shower');
+                const cloud5 = createElementWithClass('div','cloud');
+                const rays1 = createElementWithClass('div','rays');
+                const rain1 = createElementWithClass('div','rain');
+                const sun1 = createElementWithClass('div','sun');
+                sun1.appendChild(rays1);
+                iconSunshower.appendChild(cloud5);
+                iconSunshower.appendChild(sun1);
+                iconSunshower.appendChild(rain1);
+                oneWeatherCont.appendChild(iconSunshower);
+                break;
+            case "Rain":
+                const iconRainy = createElementWithClass('div','icon');
+                iconRainy.classList.add('rainy');
+                const cloud2 = createElementWithClass('div','cloud');
+                const rain = createElementWithClass('div','rain');
+                iconRainy.appendChild(cloud2);
+                iconRainy.appendChild(rain);
+                oneWeatherCont.appendChild(iconRainy);
+                break;
+            case "Snow":
+                const iconFlurries = createElementWithClass('div','icon');
+                iconFlurries.classList.add('flurries');
+                const cloud6 = createElementWithClass('div','cloud');
+                const snow = createElementWithClass('div','snow');
+                const flake1 = createElementWithClass('div','flake');
+                const flake2 = createElementWithClass('div','flake');
+                snow.appendChild(flake1);
+                snow.appendChild(flake2);
+                iconFlurries.appendChild(cloud6);
+                iconFlurries.appendChild(snow);
+                oneWeatherCont.appendChild(iconFlurries);
+                break;
+            case "Clear":
+                const iconSunny = createElementWithClass('div','icon');
+                iconSunny.classList.add('sunny');
+                const sun = createElementWithClass('div','sun');
+                const rays = createElementWithClass('div','rays');
+                sun.appendChild(rays);
+                iconSunny.appendChild(sun);
+                oneWeatherCont.appendChild(iconSunny);
+                break;
+            case "Clouds":
+                const iconCloudy = createElementWithClass('div','icon');
+                iconCloudy.classList.add('cloudy');
+                const cloud3 = createElementWithClass('div','cloud');
+                const cloud4 = createElementWithClass('div','cloud');
+                iconCloudy.appendChild(cloud3);
+                iconCloudy.appendChild(cloud4);
+                oneWeatherCont.appendChild(iconCloudy);
+                break;
+            case "Mist":
+            case "Smoke":
+            case "Haze":
+            case "Dust":
+            case "Fog":
+            case "Sand":
+            case "Ash":
+            case "Squall":
+                const iconFoggy = createElementWithClass('div','icon');
+                iconFoggy.classList.add('foggy');
+                const cloud7 = createElementWithClass('div','cloud');
+                const fog = createElementWithClass('div','fog');
+                iconFoggy.appendChild(cloud7);
+                iconFoggy.appendChild(fog);
+                oneWeatherCont.appendChild(iconFoggy);
+                break;
+            default:
+                break;
+        }
+
+        //const name = createElementWithClass('p','data');
+        //name.textContent = weatherTypes[i].getWeatherName();
+
+        //oneWeatherCont.appendChild(img);
+        //oneWeatherCont.appendChild(name);
+
+        weathersCont.appendChild(oneWeatherCont);
+    }
+}
+
 // Function that takes a WeatherData object and displays its data to the user
 function displayData(weatherDataObj) {
     // Setting background
@@ -284,34 +403,37 @@ function displayData(weatherDataObj) {
     // Displaying location, date, time info
     const locInfoCont = createElementWithId('div','loc-info-cont');
     const cityCont = createElementWithId('div','city-cont');
-    const timeDateCont = createElementWithId('div','time-date-cont');
+    const dateCont = createElementWithId('div','date-cont');
+    const timeCont = createElementWithId('div','time-cont');
     locInfoCont.appendChild(cityCont);
-    locInfoCont.appendChild(timeDateCont);
+    locInfoCont.appendChild(dateCont);
+    locInfoCont.appendChild(timeCont);
     dataCont.appendChild(locInfoCont);
 
     const city = document.createElement('h2');
     city.textContent = weatherDataObj.getLocation();
     cityCont.appendChild(city);
 
-    const dateTime = document.createElement('p');
-    dateTime.textContent = `${weatherDataObj.getLocalTime()} (UTC + ${weatherDataObj.timezone}) - `;
-    timeDateCont.appendChild(dateTime);
+    const today = new Date();
+    const date = document.createElement('p');
+    date.textContent =  formatDate(today);
+    dateCont.appendChild(date);
 
-    // Print weather types
-    /*
-    const weatherTypes = weatherDataObj.getWeatherTypes();
-    for (let i = 0; i < weatherDataObj.getNumberOfWeatherTypes(); i++) {
-        const img =  new Image();
-        img.src = weatherTypes[i].getWeatherIcon();
-        const name = createElementWithClass('p','data');
-        const desc = createElementWithClass('p','data');
-        name.textContent = weatherTypes[i].getWeatherName();
-        desc.textContent = weatherTypes[i].getWeatherDescription();
+    const time = document.createElement('p');
+    // We need to change symbol depends on + or - sign of the input
+    if (weatherDataObj.timezone > 0) {
+        time.textContent = `${weatherDataObj.getLocalTime()} (UTC + ${weatherDataObj.timezone})`;
+    } else if (weatherDataObj.timezone < 0) {
+        time.textContent = `${weatherDataObj.getLocalTime()} (UTC ${weatherDataObj.timezone})`;
+    } else {
+        time.textContent = `${weatherDataObj.getLocalTime()} (= UTC Time)`;
+    }
+    timeCont.appendChild(time);
 
-        dataCont.appendChild(img);
-        dataCont.appendChild(name);
-        dataCont.appendChild(desc);
-    }*/
+    // Displaying weather types
+    
+    // Just call the function declared above
+    displayWeatherTypes(weatherDataObj);
 
     // Print other data
     /*
@@ -357,7 +479,7 @@ function displayData(weatherDataObj) {
 }
 
 function cleanOldData() {
-    while (dataCont.childNodes.length > 1) {
+    while (dataCont.childNodes.length >= 1) {
         dataCont.removeChild(dataCont.lastChild);
     }
 }

@@ -41,3 +41,6 @@ Free Unsplash Background Credits
 - Tornado: NOAA
 - Clear: Photo by form PxHere -> https://pxhere.com/en/photo/707105
 - Clouds: Zbynek Burival
+
+Icons
+Based on (https://dribbble.com/shots/2097042-Widget-Weather) by kylor
