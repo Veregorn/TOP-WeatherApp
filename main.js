@@ -4,10 +4,11 @@ let system = "metric"; // Can change to "imperial"
 let tempUnits = "C"; // Must change to "F" for "imperial" system
 let speedUnits = "meter/sec"; //Must change to "miles/hour" for "imperial" system
 let weatherIn; // Where the data from API will be stored
-const searchButton = document.getElementById('search'); // For Event Listener associated to it
+const searchButton = document.getElementById('searchButton'); // For Event Listener associated to it
 let inputBox = document.getElementById('inputBox'); // We need its value to pass it to the API
 const dataCont = document.getElementById('data-container'); // Where we need to append weather data fields
 const unitsCheck = document.getElementById('units'); // For Event Listener associated to it
+let locationsArray = ["London","Berlin","New York","Tokyo"]; // An array that saves the last searches and displays in 'search-bottom' <div> in DOM
 
 // This function transform wind direction in degrees unit to coordinates based in 32 points rose compass
 function degreesToCoordinates(degrees) {
@@ -287,8 +288,6 @@ function displayWeatherTypes(weatherDataObj) {
     const weatherTypes = weatherDataObj.getWeatherTypes();
     for (let i = 0; i < weatherDataObj.getNumberOfWeatherTypes(); i++) {
         const oneWeatherCont = createElementWithId('div','one-weather-cont');
-        //const img =  new Image();
-        //img.src = weatherTypes[i].getWeatherIcon();
 
         // Switch - Case that build tha icon structure based on the weather name
         switch (weatherTypes[i].getWeatherName()) {
@@ -378,14 +377,13 @@ function displayWeatherTypes(weatherDataObj) {
                 break;
         }
 
-        //const name = createElementWithClass('p','data');
-        //name.textContent = weatherTypes[i].getWeatherName();
-
-        //oneWeatherCont.appendChild(img);
-        //oneWeatherCont.appendChild(name);
-
         weathersCont.appendChild(oneWeatherCont);
     }
+}
+
+// Function that displays cities in 'locationsArray' inside 'search-bottom' DOM place
+function displayOtherLocations() {
+    
 }
 
 // Function that takes a WeatherData object and displays its data to the user

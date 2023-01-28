@@ -549,10 +549,42 @@ z-index: 1;
 
 #search {
     display: flex;
+    flex-direction: column;
+}
+
+#search-top {
+    display: flex;
+    flex-direction: row;
+    gap: 10%;
 }
 
 #inputBox {
-    margin-bottom: 100px;
-    font-size: 1.5em;
-    padding-left: 0.5em;
+    width: 70%;
+    height: 96px;
+    margin-bottom: 80px;
+    font-size: 1.2em;
+    background: rgba(0,0,0,0);
+    border-top: rgba(0,0,0,0);
+    border-left: rgba(0,0,0,0);
+    border-right: rgba(0,0,0,0);
+    border-bottom: 1px solid rgba(255,255,255,0.4);
+    color: #fff;
+}
+
+#searchButton {
+    height: 100px;
+    width: 20%;
+    display: flex;
+    background-color: #A2C3DE;
+    justify-content: center;
+    align-items: center;
+}
+
+#searchButton:hover {
+    background-color: #fff;
+}
+
+#searchButton > img {
+    width: 32px;
+    height: 32px;
 }
