@@ -98,6 +98,22 @@ function toggleUnitsSystem() {
     }
 }
 
+// Function that delete the first element of the locations array
+function removeFirstCityInLocationsArray() {
+    for (let i = 0; i < locationsArray.length - 1; i++) {
+        locationsArray[i] = locationsArray[i + 1];
+    }
+    locationsArray.pop();
+}
+
+// Function that search for the input string in the locations array (predefined cities). If is a new city, place it at the end of the array and delete the first element in it
+function updateLocationsArray(location) {
+    if (!locationsArray.includes(location) && location != "Madrid") {
+        removeFirstCityInLocationsArray();
+        locationsArray.push(location);
+    }
+}
+
 // Weather Type Class
 class WeatherType {
     constructor(title,desc,icon) {
@@ -383,7 +399,19 @@ function displayWeatherTypes(weatherDataObj) {
 
 // Function that displays cities in 'locationsArray' inside 'search-bottom' DOM place
 function displayOtherLocations() {
-    
+    const container = document.getElementById('search-bottom');
+    for (let i = 0; i < locationsArray.length; i++) {
+        const element = locationsArray[i];
+        const locContainer = createElementWithClass('div','loc-container');
+        const link = createElementWithClass('span','city-link');
+        link.textContent = element;
+        link.addEventListener('click', () => {
+            currentSearch = element;
+            asyncWeatherApiCall(currentSearch);
+        });
+        locContainer.appendChild(link);
+        container.appendChild(locContainer);
+    }
 }
 
 // Function that takes a WeatherData object and displays its data to the user
@@ -433,7 +461,10 @@ function displayData(weatherDataObj) {
     // Just call the function declared above
     displayWeatherTypes(weatherDataObj);
 
-    // Print other data
+    // Displaying other cities
+    displayOtherLocations();
+
+
     /*
     const feels = createElementWithClass('p','data');
     feels.textContent = `Feels like: ${weatherDataObj.getFeels()}º ${tempUnits}`;
@@ -480,6 +511,12 @@ function cleanOldData() {
     while (dataCont.childNodes.length >= 1) {
         dataCont.removeChild(dataCont.lastChild);
     }
+
+    const otherCities = document.getElementById('search-bottom');
+
+    while (otherCities.childNodes.length >= 1) {
+        otherCities.removeChild(otherCities.lastChild);
+    }
 }
 
 // Function that exec the API call, create the obj, clean screen and displays the data
@@ -489,6 +526,8 @@ function asyncWeatherApiCall(search) {
             parseRawWeatherData(data);
             // Clean previous data
             cleanOldData();
+            // Update Locations Array
+            updateLocationsArray(search);
             // Display new data
             displayData(weatherIn);
         })
@@ -498,6 +537,8 @@ function asyncWeatherApiCall(search) {
             const errorMsg = document.createElement('h2');
             errorMsg.textContent = "Server error: Please try to search again :-(";
             dataCont.appendChild(errorMsg);
+            // Displaying other cities
+            displayOtherLocations();
         });
 }
 

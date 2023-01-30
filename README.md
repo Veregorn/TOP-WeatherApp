@@ -30,7 +30,7 @@ Free Unsplash Background Credits
 - Drizzle: Hafidh Satyanto
 - Rain: Veritet
 - Snow: Takemaru Hirai
-- Mist: Goran Vučićević
+- Mist: https://pxhere.com/en/photo/985718?utm_content=shareClip&utm_medium=referral&utm_source=pxhere
 - Smoke: Daniel Gregoire
 - Haze: Hans Isaacson
 - Dust: NOAA
