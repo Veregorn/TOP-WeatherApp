@@ -9,6 +9,7 @@ let inputBox = document.getElementById('inputBox'); // We need its value to pass
 const dataCont = document.getElementById('data-container'); // Where we need to append weather data fields
 const unitsCheck = document.getElementById('units'); // For Event Listener associated to it
 let locationsArray = ["London","Berlin","New York","Tokyo"]; // An array that saves the last searches and displays in 'search-bottom' <div> in DOM
+const timeOffset = new Date().getTimezoneOffset() * 60; // To calculate local time, sunset and sunrise properties (* 60 because seconds needed and result is in minutes)
 
 // This function transform wind direction in degrees unit to coordinates based in 32 points rose compass
 function degreesToCoordinates(degrees) {
@@ -151,10 +152,10 @@ class WeatherData {
         this.rain1 = rain1;
         this.snow1 = snow1;
         this.clouds = clouds;
-        this.utcTime = unixTimeToHHMM(utcTime-3600); // I don't know why but UTC time from API is 1 hour ahead
-        this.sunrise = unixTimeToHHMM(sunrise);
-        this.sunset = unixTimeToHHMM(sunset);
-        this.localTime = unixTimeToHHMM(utcTime-3600+timezone); // Same as in utcTime
+        this.utcTime = unixTimeToHHMM(utcTime + timeOffset);
+        this.localTime = unixTimeToHHMM(utcTime + timeOffset + timezone);
+        this.sunrise = unixTimeToHHMM(sunrise + timeOffset + timezone);
+        this.sunset = unixTimeToHHMM(sunset + timeOffset + timezone);
     }
 
     getLocation() {
@@ -399,30 +400,121 @@ function displayWeatherTypes(weatherDataObj) {
 
 // Function that displays cities in 'locationsArray' inside 'search-bottom' DOM place
 function displayOtherLocations() {
-    const container = document.getElementById('search-bottom');
+    const container = document.getElementById('predefined-searches');
     for (let i = 0; i < locationsArray.length; i++) {
         const element = locationsArray[i];
-        const locContainer = createElementWithClass('div','loc-container');
         const link = createElementWithClass('span','city-link');
         link.textContent = element;
         link.addEventListener('click', () => {
             currentSearch = element;
             asyncWeatherApiCall(currentSearch);
         });
-        locContainer.appendChild(link);
-        container.appendChild(locContainer);
+        container.appendChild(link);
+    }
+}
+
+// Function that takes a background name and gets an url to the source
+function fromBgImgToSource(bgName) {
+    switch (bgName) {
+        case "Ash-bg-d":
+        case "Ash-bg-n":
+            return "https://unsplash.com/es/fotos/qexZLgMcbPc";
+            break;
+        case "Clear-bg-d":
+            return "https://pxhere.com/en/photo/707105";
+            break;
+        case "Clear-bg-n":
+            return "https://unsplash.com/es/fotos/TSw0ua31yeQ?utm_source=unsplash&utm_medium=referral&utm_content=creditCopyText";
+            break;
+        case "Clouds-bg-d":
+            return "https://unsplash.com/es/fotos/pbxwxwfI0B4?utm_source=unsplash&utm_medium=referral&utm_content=creditCopyText";
+            break;
+        case "Clouds-bg-n":
+            return "https://unsplash.com/es/fotos/8Gl7Ew-q6D8?utm_source=unsplash&utm_medium=referral&utm_content=creditCopyText";
+            break;
+        case "Drizzle-bg-d":
+            return "https://unsplash.com/es/fotos/qPvBmSvmohs?utm_source=unsplash&utm_medium=referral&utm_content=creditCopyText";
+            break;
+        case "Drizzle-bg-n":
+            return "https://unsplash.com/es/fotos/bbw8FcIaKJs?utm_source=unsplash&utm_medium=referral&utm_content=creditCopyText";
+            break;
+        case "Dust-bg-d":
+        case "Dust-bg-n":
+            return "https://unsplash.com/es/fotos/DIIhn4HSXKY?utm_source=unsplash&utm_medium=referral&utm_content=creditCopyText";
+            break;
+        case "Fog-bg-d":
+        case "Mist-bg-d":
+            return "https://pxhere.com/en/photo/985718?utm_content=shareClip&utm_medium=referral&utm_source=pxhere";
+            break;
+        case "Fog-bg-n":
+        case "Mist-bg-n":
+            return "https://unsplash.com/es/fotos/rzCi3mD-6ho?utm_source=unsplash&utm_medium=referral&utm_content=creditCopyText";
+            break;
+        case "Haze-bg-d":
+            return "https://unsplash.com/es/fotos/U99MuqdVTx4?utm_source=unsplash&utm_medium=referral&utm_content=creditCopyText";
+            break;
+        case "Haze-bg-n":
+            return "https://unsplash.com/es/fotos/9kbsq91NFwg?utm_source=unsplash&utm_medium=referral&utm_content=creditCopyText";
+            break;
+        case "Rain-bg-d":
+        case "Rain-bg-n":
+        case "Squall-bg-n":
+            return "https://unsplash.com/es/fotos/tT_SrSMhhgE?utm_source=unsplash&utm_medium=referral&utm_content=creditCopyText";
+            break;
+        case "Sand-bg-d":
+            return "https://unsplash.com/es/fotos/x6v-fRhAJG8?utm_source=unsplash&utm_medium=referral&utm_content=creditCopyText";
+            break;
+        case "Sand-bg-n":
+            return "https://unsplash.com/es/fotos/yNGQ830uFB4?utm_source=unsplash&utm_medium=referral&utm_content=creditCopyText";
+            break;
+        case "Smoke-bg-d":
+            return "https://unsplash.com/es/fotos/hZe5eOlvqDk?utm_source=unsplash&utm_medium=referral&utm_content=creditCopyText";
+            break;
+        case "Smoke-bg-n":
+            return "https://unsplash.com/es/fotos/I1MGVZ42wnU?utm_source=unsplash&utm_medium=referral&utm_content=creditCopyText";
+            break;
+        case "Snow-bg-d":
+            return "https://unsplash.com/es/fotos/o7mSBvC57qk?utm_source=unsplash&utm_medium=referral&utm_content=creditCopyText";
+            break;
+        case "Snow-bg-n":
+            return "https://unsplash.com/es/fotos/3N5ccOE3wGg?utm_source=unsplash&utm_medium=referral&utm_content=creditCopyText";
+            break;
+        case "Squall-bg-d":
+            return "https://unsplash.com/es/@noaa";
+            break;
+        case "Thunderstorm-bg-d":
+            return "https://unsplash.com/es/fotos/WHLI73X8tE0?utm_source=unsplash&utm_medium=referral&utm_content=creditCopyText";
+            break;
+        case "Thunderstorm-bg-n":
+            return "https://unsplash.com/es/fotos/USCBhx-EqkU?utm_source=unsplash&utm_medium=referral&utm_content=creditCopyText";
+            break;
+        case "Tornado-bg-d":
+            return "https://unsplash.com/es/fotos/Zus94oboIsM?utm_source=unsplash&utm_medium=referral&utm_content=creditCopyText";
+            break;
+        case "Tornado-bg-n":
+            return "https://twitter.com/xel_artz/status/1380812058975866882";
+            break;
+        default:
+            break;
     }
 }
 
 // Function that takes a WeatherData object and displays its data to the user
 function displayData(weatherDataObj) {
     // Setting background
-    document.body.style.backgroundImage = `url('./Backgrounds/${weatherDataObj.getWeatherTypes()[0].getWeatherName()}-bg.jpg')`;
+    let fileName = "";
+    if ((weatherDataObj.getLocalTime() >= weatherDataObj.getSunriseTime()) && (weatherDataObj.getLocalTime() < weatherDataObj.getSunsetTime())) {
+        fileName = weatherDataObj.getWeatherTypes()[0].getWeatherName() + "-bg-d";
+        document.body.style.backgroundImage = `url('./Backgrounds/${fileName}.jpg')`;
+    } else {
+        fileName = weatherDataObj.getWeatherTypes()[0].getWeatherName() + "-bg-n";
+        document.body.style.backgroundImage = `url('./Backgrounds/${fileName}.jpg')`;
+    }
     
     // Displaying temp
     const tempCont = createElementWithId('div','temp-cont');
     const temp = document.createElement('h1');
-    temp.textContent = `${Math.round(weatherDataObj.getTemp())}º${tempUnits}`;
+    temp.textContent = `${Math.round(weatherDataObj.getTemp())}º ${tempUnits}`;
     tempCont.appendChild(temp);
     dataCont.appendChild(tempCont);
 
@@ -457,65 +549,64 @@ function displayData(weatherDataObj) {
     timeCont.appendChild(time);
 
     // Displaying weather types
-    
     // Just call the function declared above
     displayWeatherTypes(weatherDataObj);
 
     // Displaying other cities
     displayOtherLocations();
 
+    // Displaying weather details in 'Weather Details' Section
+    const dataDetails = document.getElementById('measures');
 
-    /*
     const feels = createElementWithClass('p','data');
-    feels.textContent = `Feels like: ${weatherDataObj.getFeels()}º ${tempUnits}`;
+    feels.textContent = `${Math.round(weatherDataObj.getFeels())}º ${tempUnits}`;
     const pres = createElementWithClass('p','data');
-    pres.textContent = `Pressure: ${weatherDataObj.getPressure()} hPa`;
+    pres.textContent = `${weatherDataObj.getPressure()} hPa`;
     const hum = createElementWithClass('p','data');
-    hum.textContent = `Humidity: ${weatherDataObj.getHumidity()} %`;
+    hum.textContent = `${weatherDataObj.getHumidity()} %`;
     const speed = createElementWithClass('p','data');
-    speed.textContent = `Wind speed: ${weatherDataObj.getWindSpeed()} ${speedUnits}`;
+    speed.textContent = `${Math.round(weatherDataObj.getWindSpeed())} ${speedUnits}`;
     const dir = createElementWithClass('p','data');
-    dir.textContent = `Wind direction: ${weatherDataObj.getWindDeg()}`;
+    dir.textContent = `${weatherDataObj.getWindDeg()}`;
     const clouds = createElementWithClass('p','data');
-    clouds.textContent = `Clouds: ${weatherDataObj.getClouds()} %`;
+    clouds.textContent = `${weatherDataObj.getClouds()} %`;
     const sunrise = createElementWithClass('p','data');
-    sunrise.textContent = `Sunrise Time: ${weatherDataObj.getSunriseTime()}`;
+    sunrise.textContent = `${weatherDataObj.getSunriseTime()}`;
     const sunset = createElementWithClass('p','data');
-    sunset.textContent = `Sunset Time: ${weatherDataObj.getSunsetTime()}`;
+    sunset.textContent = `${weatherDataObj.getSunsetTime()}`;
 
-    dataCont.appendChild(feels);
-    dataCont.appendChild(pres);
-    dataCont.appendChild(hum);
-    dataCont.appendChild(speed);
-    dataCont.appendChild(dir);
-    dataCont.appendChild(clouds);
-    dataCont.appendChild(sunrise);
-    dataCont.appendChild(sunset);*/
+    dataDetails.appendChild(feels);
+    dataDetails.appendChild(pres);
+    dataDetails.appendChild(hum);
+    dataDetails.appendChild(speed);
+    dataDetails.appendChild(dir);
+    dataDetails.appendChild(clouds);
+    dataDetails.appendChild(sunrise);
+    dataDetails.appendChild(sunset);
 
-    // Rain and snow measures only displayed if > 0
-    /*
-    if (weatherDataObj.getRain() > 0) {
-        const rain = createElementWithClass('p','data');
-        rain.textContent = `Precipitation volume for last hour: ${weatherDataObj.getRain()} mm`;
-        dataCont.appendChild(rain);
-    }
-
-    if (weatherDataObj.getSnow() > 0) {
-        const snow = createElementWithClass('p','data');
-        snow.textContent = `Snow volume for last hour: ${weatherDataObj.getSnow()} mm`;
-        dataCont.appendChild(snow);
-    }*/
+    // Displaying background credits
+    const bgCredits = document.getElementById('bg-photo-owner');
+    bgCredits.href = fromBgImgToSource(fileName);
 }
 
 function cleanOldData() {
+    // Clean temp, location and main weather data (icon)
     while (dataCont.childNodes.length >= 1) {
         dataCont.removeChild(dataCont.lastChild);
     }
 
-    const otherCities = document.getElementById('search-bottom');
+    // Clean predefined cities searches
+    const otherCities = document.getElementById('predefined-searches');
 
     while (otherCities.childNodes.length >= 1) {
         otherCities.removeChild(otherCities.lastChild);
+    }
+
+    // Clean secondary weather data on right column
+    const measures = document.getElementById('measures');
+
+    while (measures.childNodes.length >= 1) {
+        measures.removeChild(measures.lastChild);
     }
 }
 

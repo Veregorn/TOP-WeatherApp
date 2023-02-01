@@ -59,12 +59,13 @@ body {
     grid-template-columns: 65% 35%;
     color: #fff;
     font-family: 'Poppins', sans-serif;
+    font-size: 15px;
 }
 
 #left-container {
     padding: 3em 5em;
     display: grid;
-    grid-template-rows: 10% 90%;
+    grid-template-rows: 10% 80% 10%;
 }
 
 #header {
@@ -87,7 +88,7 @@ h3 {
     font-weight: 200;
 }
 
-h3 > a, h3 > a:visited {
+a, a:visited {
     text-decoration: none;
     color: #fff;
 }
@@ -99,7 +100,6 @@ h3 > a, h3 > a:visited {
     justify-content: center;
     gap: 5em;
     text-align: left;
-    padding-bottom: 2.5em;
 }
 
 #loc-info-cont {
@@ -545,35 +545,43 @@ z-index: 1;
 
 /* Weather Icons Styles END */
 
+#footer p a:hover {
+    text-decoration: underline;
+}
+
 #right-container {
     background: rgba(0,0,0,.5);
     padding-left: 5em;
-    display: grid;
-    grid-template-rows: 40% 40% 20%;
+    display: flex;
+    flex-direction: column;
+    align-items: flex-start;
+}
+
+.right-section {
+    border-bottom: 1px solid rgba(255,255,255,0.4);
+    margin-bottom: 4em;
+    width: 85%;
 }
 
 #search {
     display: flex;
-    flex-direction: column;
-}
-
-#search-top {
-    display: flex;
     flex-direction: row;
     gap: 10%;
+    width: 100%;
 }
 
 #inputBox {
     width: 70%;
     height: 96px;
     margin-bottom: 2.5em;
-    font-size: 1.2em;
+    font-size: 1.3em;
     background: rgba(0,0,0,0);
     border-top: rgba(0,0,0,0);
     border-left: rgba(0,0,0,0);
     border-right: rgba(0,0,0,0);
     border-bottom: 1px solid rgba(255,255,255,0.4);
     color: #fff;
+    font-weight: 200;
 }
 
 #inputBox:hover {
@@ -603,21 +611,65 @@ z-index: 1;
     height: 32px;
 }
 
-#search-bottom {
-    margin-right: 15%;
-    border-bottom: 1px solid rgba(255,255,255,0.4);
-}
-
-.loc-container {
-    margin-bottom: 2.5em;
+#predefined-searches {
+    display: flex;
+    flex-direction: column;
 }
 
 .city-link {
     font-size: 1.2em;
     color: rgba(255,255,255,0.4);
+    margin-bottom: 2.5em;
+    font-weight: 100;
 }
 
 .city-link:hover {
     color: #fff;
     cursor: pointer;
+}
+
+#data-details {
+    display: flex;
+    flex-direction: column;
+    padding-bottom: 2em;
+}
+
+#data-details-title {
+    margin-bottom: 3em;
+}
+
+#data-details-body {
+    display: flex;
+    flex-direction: row;
+    justify-content: space-between;
+    line-height: 3.5em;
+}
+
+.detail-heading {
+    color: rgba(255,255,255,0.4);
+    font-size: 1.2em;
+    font-weight: 100;
+}
+
+#measures {
+    padding-top: 1.1em;
+}
+
+.data {
+    text-align: right;
+    font-size: 1.2em;
+    font-weight: 100;
+}
+
+#credits {
+    margin-right: 15%;
+    line-height: 3.5em;
+}
+
+#credits > h3 {
+    margin-bottom: 2em;
+}
+
+#credits p a:hover {
+    text-decoration: underline;
 }

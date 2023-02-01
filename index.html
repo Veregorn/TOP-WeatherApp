@@ -20,24 +20,43 @@
             </div>
         </div>
         <div id="data-container"></div>
+        <div id="footer">
+            <p>Follow my work on <a href="https://github.com/Veregorn" target="_blank">Github</a></p>
+        </div>
     </div>
     <div id="right-container">
         <div id="search">
-            <div id="search-top">
-                <input id="inputBox" type="text" placeholder="Another location">
-                <div id="searchButton">
-                    <img src="./Icons/magnifying_glass_icon.png" alt="magnifying_glass_icon">
-                </div>
-            </div>
-            <div id="search-bottom">
-
+            <input id="inputBox" type="text" placeholder="Another location">
+            <div id="searchButton">
+                <img src="./Icons/magnifying_glass_icon.png" alt="magnifying_glass_icon">
             </div>
         </div>
-        <div id="data-details">
-            <h3>Weather Details</h3>
+        <div id="predefined-searches" class="right-section">
+
+        </div>
+        <div id="data-details" class="right-section">
+            <div id="data-details-title">
+                <h3>Weather Details</h3>
+            </div>
+            <div id="data-details-body">
+                <div id="headings">
+                    <p class="detail-heading">Feeling Temp</p>
+                    <p class="detail-heading">Pressure</p>
+                    <p class="detail-heading">Humidity</p>
+                    <p class="detail-heading">Wind Speed</p>
+                    <p class="detail-heading">Wind Direction</p>
+                    <p class="detail-heading">Clouds</p>
+                    <p class="detail-heading">Sunrise Time</p>
+                    <p class="detail-heading">Sunset Time</p>
+                </div>
+                <div id="measures"></div>
+            </div>
         </div>
         <div id="credits">
             <h3>Credits</h3>
+            <p class="detail-heading">Theme inspired by <a href="https://dribbble.com/shots/7118235-Weather-DailyUI-037" target="_blank">Arthur K's Weather Designs</a></p>
+            <p class="detail-heading">Icons based on <a href="https://dribbble.com/shots/2097042-Widget-Weather" target="_blank">these Kylor Ones</a></p>
+            <p class="detail-heading">Background <a id="bg-photo-owner" href="#" target="_blank">photo owner</a></p>
         </div>
     </div>
     <script src="main.js"></script>
